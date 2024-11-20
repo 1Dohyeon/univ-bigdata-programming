@@ -1,0 +1,16 @@
+.zcompdump-*
+.zshrc.pre-oh-my-zsh
+.shell.pre-oh-my-zsh
+zsh-syntax-highlighting/
+mapreduce/data/ml-latest.zip
+mapreduce/data/ml-latest/genome-scores.csv
+mapreduce/data/ml-latest/ratings.csv
+mapreduce/data/ml-latest.zip
+mapreduce/data/ml-latest/genome-scores.csv
+mapreduce/data/ml-latest/ratings.csv
+bio_data/
+online-retail-dataset.csv
+mapreduce/data/ml-latest/
+python-test/ml-latest/
+python-test/ml-latest.zip
+

@@ -1,0 +1,21 @@
+movies = LOAD '/user/maria_dev/ml-latest/movies.csv'
+ USING org.apache.pig.piggybank.storage.CSVExcelStorage(',','NO_MULTILINE', 'NOCHANGE', 
+ 'SKIP_INPUT_HEADER')
+ AS (movieId:int, title:chararray, genres: chararray);
+
+ratings_with_header = LOAD '/user/maria_dev/ml-latest/ratings.csv'
+ USING PigStorage(',')
+ AS (userId:int, movieId: int, rating: float, timestamp: chararray);
+ 
+ratings = FILTER ratings_with_header BY $0 is not null and rating >= 5;
+grouped = GROUP ratings BY movieId;
+avg_by_movie = FOREACH grouped GENERATE FLATTEN(group)
+ AS (movieId), COUNT(ratings.rating) as cnt;
+joined = JOIN movies BY (movieId), avg_by_movie BY (movieId);
+sort_avg_by_movie = ORDER joined BY cnt DESC;
+result = FOREACH sort_avg_by_movie GENERATE title AS (title), cnt AS (COUNT);
+final = LIMIT result 30;
+DUMP final;
+STORE final INTO '/user/maria_dev/best_movies'
+ USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 
+ 'NOCHANGE','WRITE_OUTPUT_HEADER');

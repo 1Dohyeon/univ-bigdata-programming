@@ -1,0 +1,53 @@
+-- 데이터 로드
+movies = LOAD '/user/maria_dev/ml-latest/movies.csv'
+    USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'NOCHANGE', 'SKIP_INPUT_HEADER')
+    AS (movieId:int, title:chararray, genres:chararray);
+
+ratings_with_header = LOAD '/user/maria_dev/ml-latest/ratings.csv'
+    USING PigStorage(',')
+    AS (userId:int, movieId:int, rating:float, timestamp:chararray);
+
+-- NULL 값 제거
+ratings = FILTER ratings_with_header BY rating IS NOT NULL;
+
+-- 각 영화별 평균 평점과 평점 수 계산
+grouped = GROUP ratings BY movieId;
+ratings_summary = FOREACH grouped GENERATE 
+    group AS movieId,
+    COUNT(ratings.rating) AS rating_cnt,
+    AVG(ratings.rating) AS rating_avg;
+
+-- 영화와 평점 데이터를 조인
+movies_and_ratings = JOIN movies BY movieId, ratings_summary BY movieId;
+
+-- 평점 수가 30회 이상인 데이터만 필터링
+filtered = FILTER movies_and_ratings BY rating_cnt >= 30;
+
+-- 장르별로 데이터를 분리
+genre_bag = FOREACH filtered GENERATE STRSPLITTOBAG(genres, '\\|') AS genre_bag, rating_cnt, rating_avg;
+limited_genre_bag = LIMIT genre_bag 10;
+DUMP limited_genre_bag;
+
+-- FLATTEN을 사용하여 장르를 한 줄씩 분리
+genre_split = FOREACH genre_bag GENERATE
+    FLATTEN(genre_bag) AS genre:chararray,
+    rating_cnt,
+    rating_avg;
+
+-- 장르별 그룹화 및 집계
+group_by_genre = GROUP genre_split BY genre;
+
+genre_summary = FOREACH group_by_genre GENERATE
+    group AS genre,
+    (double)SUM(genre_split.rating_cnt) AS total_cnt,
+    (double)AVG(genre_split.rating_avg) AS rating_avg;
+
+-- 총 평점 수를 기준으로 내림차순 정렬
+sort_avg_by_genre = ORDER genre_summary BY total_cnt DESC;
+
+-- 상위 결과 30개 출력 및 저장
+final = LIMIT sort_avg_by_genre 30;
+DUMP final;
+STORE sort_avg_by_genre INTO '/user/maria_dev/60202464/best_genre'
+    USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'NOCHANGE', 'WRITE_OUTPUT_HEADER');
+

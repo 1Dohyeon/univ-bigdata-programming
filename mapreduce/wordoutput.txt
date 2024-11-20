@@ -1,0 +1,9 @@
+"a"	1
+"aaa"	3
+"aa"	2
+"dd"	2
+"abc"	1
+"bbcc"	1
+"aoisdjf"	1
+"bb"	1
+"asdifjasdifaaaaa"	1

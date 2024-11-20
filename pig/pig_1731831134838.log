@@ -1,0 +1,29 @@
+Pig Stack Trace
+---------------
+ERROR 1066: Unable to open iterator for alias filtered_sample. Backend error : Vertex's TaskResource is beyond the cluster container capability,Vertex=vertex_1731755989175_0012_1_00 [scope-69], Requested TaskResource=<memory:8192, vCores:1>, Cluster MaxContainerCapability=<memory:4096, vCores:4>
+
+org.apache.pig.impl.logicalLayer.FrontendException: ERROR 1066: Unable to open iterator for alias filtered_sample. Backend error : Vertex's TaskResource is beyond the cluster container capability,Vertex=vertex_1731755989175_0012_1_00 [scope-69], Requested TaskResource=<memory:8192, vCores:1>, Cluster MaxContainerCapability=<memory:4096, vCores:4>
+	at org.apache.pig.PigServer.openIterator(PigServer.java:1009)
+	at org.apache.pig.tools.grunt.GruntParser.processDump(GruntParser.java:747)
+	at org.apache.pig.tools.pigscript.parser.PigScriptParser.parse(PigScriptParser.java:376)
+	at org.apache.pig.tools.grunt.GruntParser.parseStopOnError(GruntParser.java:231)
+	at org.apache.pig.tools.grunt.GruntParser.parseStopOnError(GruntParser.java:206)
+	at org.apache.pig.tools.grunt.Grunt.exec(Grunt.java:81)
+	at org.apache.pig.Main.run(Main.java:503)
+	at org.apache.pig.Main.main(Main.java:178)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:318)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:232)
+Caused by: org.apache.tez.dag.api.TezException: Vertex's TaskResource is beyond the cluster container capability,Vertex=vertex_1731755989175_0012_1_00 [scope-69], Requested TaskResource=<memory:8192, vCores:1>, Cluster MaxContainerCapability=<memory:4096, vCores:4>
+	at org.apache.pig.tools.pigstats.tez.TezPigScriptStats.accumulateStats(TezPigScriptStats.java:198)
+	at org.apache.pig.backend.hadoop.executionengine.tez.TezJob.run(TezJob.java:243)
+	at org.apache.pig.backend.hadoop.executionengine.tez.TezLauncher$1.run(TezLauncher.java:210)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+================================================================================
